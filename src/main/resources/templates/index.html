@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>My Web App</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container-sm">
+    	<table class="table">
+    		<thead class="thead-dark">
+    			<tr>
+	    			<th>ID</th>
+	    			<th>Rut</th>
+	    			<th>Apellidos</th>
+					<th>Nombres</th>
+					<th>Tipo_cole</th>
+					<th>nom_cole</th>
+					<th>anio_egreso</th>
+    			</tr>
+    		</thead>
+    		<tbody>
+    			<tr th:each="estudiantes:${estudiantes}">
+    				<td th:text="${estudiantes.id_estudiante}"></td>
+    				<td th:text="${estudiantes.rut}"></td>
+    				<td th:text="${estudiantes.apellidos}"></td>
+					<td th:text="${estudiantes.nombres}"></td>
+					<td th:text="${estudiantes.tipo_cole}"></td>
+					<td th:text="${estudiantes.nom_cole}"></td>
+					<td th:text="${estudiantes.anio_egre}"></td>
+    				<td>
+    					<a class="btn btn-primary" href="#" role="button">Editar</a>
+    					<a class="btn btn-danger" href="#" role="button">Eliminar</a>
+    				</td>
+    			</tr>
+    		</tbody>
+    	</table>
+    </div>
+</body>
+</html>
