@@ -8,6 +8,7 @@ class TopEducationApplicationTests {
 
 	@Test
 	void contextLoads() {
+
 	}
 
 }

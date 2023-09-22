@@ -15,4 +15,8 @@ public class EstudiantesService {
     public ArrayList<EstudiantesEntity> obtenerEstudiantes(){
         return (ArrayList<EstudiantesEntity>) EstudiantesRepository.findAll();
     }
+
+    public EstudiantesEntity guardarEstudiantes(EstudiantesEntity estudiante){
+        return EstudiantesRepository.save(estudiante);
+    }
 }
