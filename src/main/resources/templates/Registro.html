@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html lang="">
+<head>
+    <title>Registro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" href="/Logo.png" type="image/png">
+</head>
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color: #919167;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    .container {
+        background-color: #940533;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 600px;
+        text-align: center;
+    }
+
+    h2 {
+    color: #f9f9f1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #f9f9f1;
+    }
+
+    button {
+        background-color: #bb8138;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+        width: 75%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+        background-color: #84b295;
+    }
+
+    select {
+        width: 75%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+        background-color: #84b295;
+    }
+
+    button:hover {
+        background-color: #eccf8d;
+    }
+</style>
+<body>
+<div class="container">
+    <h2>Registro Estudiante</h2>
+    <form action="/Procesar-registro" method="post">
+
+        <!-- Rut de estudiantes usando elementos automaticos -->
+        <div class="input-group">
+            <label for="rut">RUT Estudiante:</label>
+            <input type="text" id="rut" name="rut" required
+                   pattern="\d{1,2}\.\d{3}\.\d{3}-\d{1|K|k}"
+                   oninput="formatRut(this);">
+        </div>
+        <!-- ****************************************************** -->
+
+        <!-- Elementos escritos de datos de estudiante -->
+        <div class="input-group">
+            <label for="apellidos">Apellidos:</label>
+            <input type="text" id="apellidos" name="apellidos" required>
+        </div>
+        <div class="input-group">
+            <label for="nombres">Nombres:</label>
+            <input type="text" id="nombres" name="nombres" required>
+        </div>
+        <div class="input-group">
+            <label for="nom_cole">Nombre Colegio:</label>
+            <input type="text" id="nom_cole" name="nom_cole" required>
+        </div>
+        <!-- ****************************************************** -->
+
+        <!-- Elementos de selección -->
+        <div class="input-group">
+            <label for="anio_egre">Años pasados desde egreso:</label>
+            <input type="number" id="anio_egre" name="anio_egre" min="0" required>
+        </div>
+        <div class="input-group">
+            <label for="tipo_cole">Tipo de colegio:</label>
+            <select id="tipo_cole" name="tipo_cole" required>
+                <option value="Privado">Privado</option>
+                <option value="Subencionado">Subencionado</option>
+                <option value="Municipal">Municipal</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="fecha_nac">Fecha de Nacimiento:</label>
+            <input type="date" id="fecha_nac" name="fecha_nac" required>
+        </div>
+
+        <!-- ****************************************************** -->
+
+        <!-- Botón de registro -->
+        <button type="submit">Registrar Estudiante</button>
+    </form>
+</div>
+</body>
+<script>
+    function formatRut(input) {
+        let value = input.value.replace(/[^\dKk]/g, '');
+
+        if (value.length > 1) {
+            // Agregar un punto antes de los últimos tres dígitos
+            value = value.replace(/^(\d{1,2})(\d{3})(\d{3})([\dk])$/, "$1.$2.$3-$4");
+        }
+
+        input.value = value;
+    }
+</script>
+</html>

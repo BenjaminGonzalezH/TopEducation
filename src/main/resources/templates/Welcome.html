@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <title>TopEducation</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -8,6 +8,12 @@
 <style>
     body{
         background-color: #919167;
+    }
+
+    .text {
+        color: #f9f9f1;
+        font-weight: bold;
+        text-align: center;
     }
 
     .center-image{
@@ -43,9 +49,13 @@
 
 <body>
 <div class="navbar">
-    <a href="/listar">Listar</a>
+    <a href="/registrar">Registrar Alumno</a>
     <a href="#">Acerca de</a>
     <a href="#">Contacto</a>
+</div>
+
+<div>
+    <p class="text mensaje-text" th:if="${mensaje}" th:text="${mensaje}"></p>
 </div>
 
 <img src="Portada.png" class="center-image">

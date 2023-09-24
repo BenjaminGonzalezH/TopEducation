@@ -19,4 +19,16 @@ public class EstudiantesService {
     public EstudiantesEntity guardarEstudiantes(EstudiantesEntity estudiante){
         return EstudiantesRepository.save(estudiante);
     }
+
+    public int VerificarExistenciaEstudiante(String Rut){
+        //Se comprueba si no existe algun estudiante con el rut dado.
+        if(EstudiantesRepository.findByRut(Rut) == null){
+            //Se retorna 0 si no hay alumno con ese rut.
+            return 0;
+        }
+        else{
+            //En caso contrario se retorna 1.
+            return 1;
+        }
+    }
 }
