@@ -3,7 +3,6 @@ package TopEducation.App.controllers;
 
 import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.services.EstudiantesService;
-import com.sun.xml.bind.util.AttributesImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,7 +37,7 @@ public class EstudiantesControllers {
     public String procesarFormularioRegistro(@ModelAttribute EstudiantesEntity estudiante, Model model) {
         //Se verifica que el rut no existe previamente.
         if(estudiantesService.VerificarExistenciaEstudiante(estudiante.getRut()) == 1){
-            //Si no existe estudiante se va a una vista de error.
+            //Si existe estudiante se va a una vista con el mensaje.
             model.addAttribute("mensaje","Ya existe un alumno con el rut escrito.");
         }
         else{

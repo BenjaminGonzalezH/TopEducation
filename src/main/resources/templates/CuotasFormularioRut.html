@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Buscar Cuotas por RUT</title>
+  <link rel="icon" href="/Logo.png" type="image/png">
+</head>
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color: #919167;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    p {
+      color: #f9f9f1;
+    }
+
+    .container {
+        background-color: #940533;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 600px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    h1 {
+        color: #f9f9f1;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 5px;
+        color: #f9f9f1;
+    }
+
+    button {
+        background-color: #bb8138;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    input {
+        width: 50%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+        background-color: #84b295;
+    }
+
+    button:hover {
+        background-color: #eccf8d;
+    }
+</style>
+
+<body>
+<div class="container">
+  <form method="get" action="/BuscarCuotasPorRut/{Rut}">
+    <h1>Buscar Cuotas por RUT</h1>
+    <p class="text mensaje-text" th:if="${mensaje}" th:text="${mensaje}"></p>
+    <label for="rut">Ingrese un RUT de estudiante:</label>
+    <input type="text" id="rut" name="rut" required
+           pattern="\d{1,2}\.\d{3}\.\d{3}-\d{1|K|k}"
+           oninput="formatRut(this);">
+    <button type="submit">Buscar</button>
+    <button onclick="history.back()">Atrás</button>
+  </form>
+</div>
+</body>
+<script>
+    function formatRut(input) {
+        let value = input.value.replace(/[^\dKk]/g, '');
+
+        if (value.length > 1) {
+            // Agregar un punto antes de los últimos tres dígitos
+            value = value.replace(/^(\d{1,2})(\d{3})(\d{3})([\dk])$/, "$1.$2.$3-$4");
+        }
+
+        input.value = value;
+    }
+</script>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Detalle de Cuota</title>
+  <link rel="icon" href="/Logo.png" type="image/png">
+</head>
+<style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color: #919167;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    p {
+      color: #f9f9f1;
+    }
+
+    .container {
+        background-color: #940533;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 600px;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    h1 {
+        color: #f9f9f1;
+    }
+
+    button {
+        background-color: #bb8138;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #eccf8d;
+    }
+</style>
+<body>
+<div class="container">
+  <h1>Detalle de Cuota</h1>
+  <div>
+    <p><strong>ID Cuota:</strong> <span th:text="${cuota.id_cuota != null ? cuota.id_cuota : 'Sin especificar'}"></span></p>
+    <p><strong>Tipo de pago:</strong> <span th:text="${cuota.tipo_pag != null ? cuota.tipo_pag : 'Sin especificar'}"></span></p>
+    <p><strong>Estado:</strong> <span th:text="${cuota.estado != null ? cuota.estado : 'Sin especificar'}"></span></p>
+    <p><strong>Monto Nominal:</strong> <span th:text="${cuota.monto_primario != null ? cuota.monto_primario : 'Sin especificar'}"></span></p>
+    <p><strong>Monto Real a Pagar:</strong> <span th:text="${cuota.monto_pagado != null ? cuota.monto_pagado : 'Sin especificar'}"></span></p>
+    <p><strong>Fecha Creación:</strong> <span th:text="${cuota.fecha_crea != null ? cuota.fecha_crea  : 'Sin especificar'}"></span></p>
+    <p><strong>Fecha Pago:</strong> <span th:text="${cuota.fecha_pago != null ? cuota.fecha_pago  : 'Sin especificar'}"></span></p>
+    <p><strong>Meses de atraso:</strong> <span th:text="${cuota.meses_atra != null ? cuota.meses_atra  : 'Sin especificar'}"></span></p>
+    <button onclick="history.back()">Atrás</button>
+  </div>
+</div>
+</body>
+</html>
