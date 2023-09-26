@@ -55,4 +55,15 @@ public class CuotaController {
 
         return "DetalleCuotaIndividual";
     }
+
+    @GetMapping("/RegistrarPagoCuota/{idCuota}")
+    public String ActualizarCuotaFormulario(@PathVariable("idCuota") Long idCuota, Model model) {
+        /*Búsqueda de Cuota especificada*/
+        CuotaEntity cuota = cuotaService.RegistrarEstadoDePagoCuota(idCuota);
+
+        /*Agrega la cuota al modelo para que se pueda mostrar en la vista*/
+        model.addAttribute("cuota", cuota);
+
+        return "DetalleCuotaIndividual";
+    }
 }

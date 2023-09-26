@@ -7,6 +7,7 @@ import TopEducation.App.repositories.EstudiantesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 @Service
@@ -37,4 +38,19 @@ public class CuotaService {
     }
 
     public CuotaEntity BuscarPorID(Long idCuota){ return cuotaRepository.findByIdCuota(idCuota);}
+
+    public CuotaEntity RegistrarEstadoDePagoCuota(Long idCuota){
+        /*Se busca cuentas existentes*/
+        CuotaEntity CuotaExistente = cuotaRepository.findByIdCuota(idCuota);
+
+        /*Se verifica que no se modifique una cuota en estado pagado*/
+        if("Pagado".equals(CuotaExistente.getEstado())) { /*Cuota ya pagada*/
+            return CuotaExistente;
+        }
+
+        /*En caso contrario se actualiza cuota*/
+        CuotaExistente.setEstado("Pagado");
+        CuotaExistente.setFecha_pago(LocalDate.now());
+        return cuotaRepository.save(CuotaExistente);
+    }
 }

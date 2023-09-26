@@ -81,7 +81,7 @@
         <td th:text="${cuota.monto_pagado != null ? cuota.monto_pagado : 'Sin especificar'}"></td>
         <td th:text="${cuota.estado != null ? cuota.estado : 'Sin especificar'}"></td>
         <td>
-            <a class="btn btn-primary" href="#" role="button">Editar Estado de pago</a>
+            <a class="btn btn-primary" href="#" role="button" th:href="'/RegistrarPagoCuota/' + ${cuota.id_cuota}">Registrar pago</a>
             <a class="btn btn-primary" href="#" role="button" th:href="'/DetalleCuota/' + ${cuota.id_cuota}">Detalle</a>
         </td>
     </tr>
