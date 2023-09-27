@@ -1,14 +1,12 @@
 package TopEducation.App.controllers;
 
 import TopEducation.App.entities.CuotaEntity;
+import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.services.CuotaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -57,7 +55,7 @@ public class CuotaController {
     }
 
     @GetMapping("/RegistrarPagoCuota/{idCuota}")
-    public String ActualizarCuotaFormulario(@PathVariable("idCuota") Long idCuota, Model model) {
+    public String RegistrarPagoCuota(@PathVariable("idCuota") Long idCuota, Model model) {
         /*Búsqueda de Cuota especificada*/
         CuotaEntity cuota = cuotaService.RegistrarEstadoDePagoCuota(idCuota);
 
@@ -65,5 +63,25 @@ public class CuotaController {
         model.addAttribute("cuota", cuota);
 
         return "DetalleCuotaIndividual";
+    }
+
+    @GetMapping("/GenerarCuotas")
+    public String GenerarCuotasFormulario() {
+
+        return "GenerarCuotasFormulario";
+    }
+
+    @PostMapping("/GuardarCuotas")
+    public String GenerarCuotas(@RequestParam("rut") String rut,
+                                @RequestParam("cant_cuotas") Integer cantCuotas,
+                                Model model) {
+        /*Se guardan Cuotas*/
+        cuotaService.GenerarCuotasDeEstudiante(rut,cantCuotas);
+
+        /*Cuotas generadas satisfactoriamente*/
+        model.addAttribute("mensaje","Cuotas generadas satisfactoriamente.");
+
+        /**/
+        return "welcome";
     }
 }

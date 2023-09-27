@@ -53,4 +53,32 @@ public class CuotaService {
         CuotaExistente.setFecha_pago(LocalDate.now());
         return cuotaRepository.save(CuotaExistente);
     }
+
+    public ArrayList<CuotaEntity> GenerarCuotasDeEstudiante(String Rut, Integer Cantidad) {
+        /* Se busca usuario para generar cuotas */
+        EstudiantesEntity estudiante = estudiantesRepository.findByRut(Rut);
+
+        /* Lista para almacenar las cuotas generadas */
+        ArrayList<CuotaEntity> cuotasGeneradas = new ArrayList<>();
+
+        /* Se establece modelo de cuotas */
+
+
+        /* Se ingresan cuotas a la lista */
+        for (int i = 0; i < Cantidad; i++) {
+            CuotaEntity ModeloCuota = new CuotaEntity();
+            ModeloCuota.setId_estudiante(estudiante.getId_estudiante());
+            ModeloCuota.setMonto_primario((float) (1500000 / Cantidad));
+            ModeloCuota.setTipo_pag("Cuotas");
+            ModeloCuota.setEstado("Pendiente");
+            ModeloCuota.setMonto_pagado((float) 0);
+            ModeloCuota.setFecha_crea(LocalDate.now());
+            ModeloCuota.setMeses_atra(0);
+            cuotaRepository.save(ModeloCuota); // Guarda la cuota en la base de datos
+            cuotasGeneradas.add(ModeloCuota); // Agrega la cuota a la lista de cuotas generadas
+        }
+
+        /* Se retorna la lista de cuotas generadas */
+        return cuotasGeneradas;
+    }
 }
