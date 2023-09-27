@@ -11,20 +11,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.ArrayList;
-
 @Controller
 @RequestMapping
 public class EstudiantesControllers {
     @Autowired
     EstudiantesService estudiantesService;
-
-    @GetMapping("/listar")
-    public String listar(Model model) {
-        ArrayList<EstudiantesEntity>estudiantes=estudiantesService.obtenerEstudiantes();
-        model.addAttribute("estudiantes",estudiantes);
-        return "index";
-    }
 
     @GetMapping("/registrar")
     public String FormularioRegistro(Model model)

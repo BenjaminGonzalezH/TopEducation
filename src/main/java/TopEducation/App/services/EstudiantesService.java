@@ -5,16 +5,10 @@ import TopEducation.App.repositories.EstudiantesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class EstudiantesService {
     @Autowired
     EstudiantesRepository EstudiantesRepository;
-
-    public ArrayList<EstudiantesEntity> obtenerEstudiantes(){
-        return (ArrayList<EstudiantesEntity>) EstudiantesRepository.findAll();
-    }
 
     public EstudiantesEntity guardarEstudiantes(EstudiantesEntity estudiante){
         return EstudiantesRepository.save(estudiante);
