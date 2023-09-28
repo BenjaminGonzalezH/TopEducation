@@ -1,7 +1,6 @@
 package TopEducation.App.controllers;
 
 import TopEducation.App.entities.CuotaEntity;
-import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.services.CuotaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
