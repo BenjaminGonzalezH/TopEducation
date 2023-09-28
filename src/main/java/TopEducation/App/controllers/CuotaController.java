@@ -73,14 +73,42 @@ public class CuotaController {
     @PostMapping("/GuardarCuotas")
     public String GenerarCuotas(@RequestParam("rut") String rut,
                                 @RequestParam("cant_cuotas") Integer cantCuotas,
+                                @RequestParam("tipo_pago") String TipoPago,
                                 Model model) {
+        /*Cuota de error*/
+        ArrayList<CuotaEntity> Error;
+
         /*Se guardan Cuotas*/
-        cuotaService.GenerarCuotasDeEstudiante(rut,cantCuotas);
+        Error = cuotaService.GenerarCuotasDeEstudiante(rut,cantCuotas,TipoPago);
+
+        /*Mensajes de error*/
+        if(Error.get(0).getMeses_atra() == -1){
+            model.addAttribute("mensaje","Pago al contado es unico");
+            return "welcome";
+        }
+        else if(Error.get(0).getMeses_atra() == -2){
+            model.addAttribute("mensaje","Ya hay cuotas asociadas al rut");
+            return "welcome";
+        }
+        else if(Error.get(0).getMeses_atra() == -3){
+            model.addAttribute("mensaje","Un alumno de un colegio municipal solo " +
+                    "opta a máximo 10 cuotas");
+            return "welcome";
+        }
+        else if(Error.get(0).getMeses_atra() == -4){
+            model.addAttribute("mensaje","Un alumno de un colegio subvencionado solo " +
+                    "opta a máximo 7 cuotas");
+            return "welcome";
+        }
+        else if(Error.get(0).getMeses_atra() == -5){
+            model.addAttribute("mensaje","Un alumno de un colegio privado solo " +
+                    "opta a máximo 4 cuotas");
+            return "welcome";
+        }
 
         /*Cuotas generadas satisfactoriamente*/
         model.addAttribute("mensaje","Cuotas generadas satisfactoriamente.");
 
-        /**/
         return "welcome";
     }
 }

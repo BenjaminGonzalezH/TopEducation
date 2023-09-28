@@ -74,7 +74,7 @@
     }
 </style>
 <div class="container">
-  <h2>Registro Estudiante</h2>
+  <h2>Generar cuotas</h2>
   <form action="/GuardarCuotas" method="post">
 
     <div class="input-group">
@@ -83,10 +83,16 @@
              pattern="\d{1,2}\.\d{3}\.\d{3}-\d{1|K|k}"
              oninput="formatRut(this);">
     </div>
-
+    <div class="input-group">
+      <label for="tipo_pago">Tipo de cuota:</label>
+      <select id="tipo_pago" name="tipo_pago" required>
+        <option value="Contado">Contado</option>
+        <option value="Cuotas">Cuotas</option>
+      </select>
+    </div>
     <div class="input-group">
       <label for="cant_cuotas">Cantidad de cuotas</label>
-      <input type="number" id="cant_cuotas" name="cant_cuotas" min="0" required>
+      <input type="number" id="cant_cuotas" name="cant_cuotas" min="1" required>
     </div>
 
     <button type="submit">Generar Cuotas</button>

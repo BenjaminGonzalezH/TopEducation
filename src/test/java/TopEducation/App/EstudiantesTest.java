@@ -1,6 +1,7 @@
 package TopEducation.App;
 
 import TopEducation.App.entities.EstudiantesEntity;
+import TopEducation.App.repositories.EstudiantesRepository;
 import TopEducation.App.services.EstudiantesService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class EstudiantesTest {
 
     @Autowired
     private EstudiantesService estudiantesService;
+
+    @Autowired
+    private EstudiantesRepository estudiantesRepository;
 
     @Test
     void GuardarEstudianteEnBD_CasoUsual() {
@@ -35,6 +39,7 @@ public class EstudiantesTest {
         /*Guardado en la base de datos*/
         resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
+        estudiantesRepository.delete(estudiante);
 
         /*Comparación*/
         assertEquals(estudiante.getRut(),resultado.getRut());
@@ -59,6 +64,7 @@ public class EstudiantesTest {
         /*Guardado en la base de datos*/
         resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
+        estudiantesRepository.delete(estudiante);
 
         /*Comparación*/
         /*Esto muestra que desde c*/
@@ -93,6 +99,7 @@ public class EstudiantesTest {
         /*Guardado en la base de datos*/
         resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
+        estudiantesRepository.delete(estudiante);
 
         /*Comparación*/
         assertEquals(estudiante.getRut(),resultado.getRut());
