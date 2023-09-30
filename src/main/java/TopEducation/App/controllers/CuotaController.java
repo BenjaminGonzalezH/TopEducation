@@ -105,6 +105,10 @@ public class CuotaController {
                     "opta a máximo 4 cuotas");
             return "welcome";
         }
+        else if(Error.get(0).getMeses_atra() == -6){
+            model.addAttribute("mensaje","Rut dado no esta registrado");
+            return "welcome";
+        }
 
         /*Cuotas generadas satisfactoriamente*/
         model.addAttribute("mensaje","Cuotas generadas satisfactoriamente.");

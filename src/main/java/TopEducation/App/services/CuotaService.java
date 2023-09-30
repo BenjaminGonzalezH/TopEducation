@@ -79,7 +79,14 @@ public class CuotaService {
 
         /*Control de entrada*/
         //Existencia previa de cuotas.
-        if(!cuotaRepository.findAllByEstudianteId(estudiante.getId_estudiante()).isEmpty()){
+        /*Rut no registrado*/
+        if(estudiante == null){
+            errorCuota.setMeses_atra(-6);
+            cuotasGeneradas.add(errorCuota);
+            return cuotasGeneradas;
+        }
+        //Existencia previa de cuotas.
+        else if(!cuotaRepository.findAllByEstudianteId(estudiante.getId_estudiante()).isEmpty()){
             errorCuota.setMeses_atra(-2);
             cuotasGeneradas.add(errorCuota);
             return cuotasGeneradas;
@@ -124,17 +131,11 @@ public class CuotaService {
         ArancelReal = (float) 1500000;
 
         /*Descuento por procedencia*/
-        switch(estudiante.getTipo_cole()){
-            case "Municipal":
-                ArancelReal = ArancelReal - ((float) (1500000*0.20));
-                break;
-
-            case "Subvencionado":
-                ArancelReal = ArancelReal - ((float) (1500000*0.10));
-                break;
-
-            default:
-                break;
+        switch (estudiante.getTipo_cole()) {
+            case "Municipal" -> ArancelReal = ArancelReal - ((float) (1500000 * 0.20));
+            case "Subvencionado" -> ArancelReal = ArancelReal - ((float) (1500000 * 0.10));
+            default -> {
+            }
         }
 
         /*Descuento por años de egreso en el colegio*/
@@ -149,19 +150,35 @@ public class CuotaService {
         }
 
         /* Se ingresan cuotas a la lista */
-        for (int i = 0; i < Cantidad; i++) {
-            /* Se establece modelo de cuotas */
+        if(Tipo == "Contado") {
             ModeloCuota = new CuotaEntity();
             ModeloCuota.setId_estudiante(estudiante.getId_estudiante());
-            ModeloCuota.setMonto_primario((float) (1500000 / Cantidad));
+            ModeloCuota.setMonto_primario((float) (1500000 / 2));
             ModeloCuota.setTipo_pag("Cuotas");
             ModeloCuota.setEstado("Pendiente");
-            ModeloCuota.setMonto_pagado(ArancelReal/Cantidad);
+            ModeloCuota.setMonto_pagado((float) 1500000/2);
             ModeloCuota.setFecha_crea(LocalDate.now());
             ModeloCuota.setMeses_atra(0);
 
             cuotaRepository.save(ModeloCuota); // Guarda la cuota en la base de datos
             cuotasGeneradas.add(ModeloCuota); // Agrega la cuota a la lista de cuotas generadas
+        }
+        else {
+            /*Otros casos*/
+            for (int i = 0; i < Cantidad; i++) {
+                /* Se establece modelo de cuotas */
+                ModeloCuota = new CuotaEntity();
+                ModeloCuota.setId_estudiante(estudiante.getId_estudiante());
+                ModeloCuota.setMonto_primario((float) (1500000 / Cantidad));
+                ModeloCuota.setTipo_pag("Cuotas");
+                ModeloCuota.setEstado("Pendiente");
+                ModeloCuota.setMonto_pagado(ArancelReal / Cantidad);
+                ModeloCuota.setFecha_crea(LocalDate.now());
+                ModeloCuota.setMeses_atra(0);
+
+                cuotaRepository.save(ModeloCuota); // Guarda la cuota en la base de datos
+                cuotasGeneradas.add(ModeloCuota); // Agrega la cuota a la lista de cuotas generadas
+            }
         }
 
         /* Se retorna la lista de cuotas generadas */
