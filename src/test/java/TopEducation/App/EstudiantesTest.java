@@ -97,9 +97,9 @@ public class EstudiantesTest {
         //Pero no evita que el texto no sea correcto.
 
         /*Guardado en la base de datos*/
-        resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
         estudiantesRepository.delete(estudiante);
+        estudiantesRepository.delete(resultado);
 
         /*Comparación*/
         assertEquals(estudiante.getRut(),resultado.getRut());
@@ -110,5 +110,32 @@ public class EstudiantesTest {
         assertEquals(estudiante.getTipo_cole(),resultado.getTipo_cole());
         assertEquals(estudiante.getNom_cole(),resultado.getNom_cole());
         assertEquals(estudiante.getAnio_egre(),resultado.getAnio_egre(),0);
+    }
+
+    @Test
+    void VerificarExistenciaEstudiante() {
+        /*Elementos Internos*/
+        EstudiantesEntity estudiante;   //Estudiante de prueba.
+        Integer indicador;
+        Integer indicador1;
+
+        estudiante = new EstudiantesEntity(); //Creación.
+        //Id de entidad actualizable de forma automatica
+        estudiante.setRut("20453333k");
+        estudiante.setApellidos("dsd7as6d767");
+        estudiante.setNombres("asd08as7ds8a7dsa7");
+        estudiante.setFecha_nac(new Date());
+        estudiante.setTipo_cole("sdas098das90d8sa");
+        estudiante.setNom_cole("sadas98d9asd809");
+        estudiante.setAnio_egre(4);
+
+        estudiante = estudiantesService.guardarEstudiantes(estudiante);
+        indicador = estudiantesService.VerificarExistenciaEstudiante("20453333k");
+        indicador1 = estudiantesService.VerificarExistenciaEstudiante(".......");
+        estudiantesRepository.delete(estudiante);
+
+        /*Verificar resultados*/
+        assertEquals(indicador,1,0);
+        assertEquals(indicador1,0,0);
     }
 }

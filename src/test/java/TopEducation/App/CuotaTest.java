@@ -305,4 +305,34 @@ public class CuotaTest {
         assertEquals(cuotas1.get(1).getEstado(),"Pendiente");
         assertEquals(cuotas.get(1).getEstado(),"Pendiente");
     }
+
+    @Test
+    void BuscarCuotaPorID(){
+        //Elementos Internos.
+        EstudiantesEntity estudiante = new EstudiantesEntity();   //Estudiante de prueba.
+        ArrayList<CuotaEntity> cuotas;  //Cuotas generadas.
+        CuotaEntity Test;       //Cuota de prueba
+
+        /*Se genera estudiante de prueba Dummy (esto para evitar errores)*/
+        estudiante.setRut("prueba2");
+        estudiante.setApellidos("Ramirez Baeza");
+        estudiante.setNombres("Elvio Camba");
+        estudiante.setFecha_nac(new Date());
+        estudiante.setTipo_cole("Privado");
+        estudiante.setNom_cole("Weston Academy");
+        estudiante.setAnio_egre(4);
+
+        /*Generar cuotas y buscar por ID*/
+        estudiante = estudiantesService.guardarEstudiantes(estudiante);
+        cuotas = cuotaService.GenerarCuotasDeEstudiante("prueba2",1,"Contado");
+        Test = cuotaService.BuscarPorID(cuotas.get(0).getId_cuota());
+        cuotaRepository.deleteAll(cuotas);
+        estudiantesRepository.delete(estudiante);
+
+        /*Comprobar resultados*/
+        assertEquals(cuotas.get(0).getMonto_primario(),(float) 70000,0);
+        assertEquals(Test.getMonto_pagado(),(float) 70000,0);
+        assertEquals(Test.getEstado(),"Pagado");
+        assertEquals(cuotas.get(0).getEstado(),"Pagado");
+    }
 }

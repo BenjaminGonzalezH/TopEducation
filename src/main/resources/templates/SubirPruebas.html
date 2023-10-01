@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+            crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link rel="icon" href="/Logo.png" type="image/png">
+
+    <title>Cargar Datos Pruebas</title>
+    <style>
+    body{
+        font-family: Arial, sans-serif;
+        background-color: #919167;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+    .container {
+        background-color: #940533;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        width: 600px;
+        text-align: center;
+    }
+    button {
+        background-color: #bb8138;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+    button:hover {
+        background-color: #eccf8d;
+    }
+    select {
+        width: 75%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+        background-color: #84b295;
+    }
+    .btn-primary {
+        background-color: #bb8138;
+        margin-left: 10px;
+    }
+    .btn-primary:hover {
+        background-color: #eccf8d;
+    }
+    h1,h5,h2 {
+        display: block;
+        margin-bottom: 5px;
+        color: #f9f9f1;
+    }
+    input[type="file"] {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+        background-color: #84b295;
+    }
+  </style>
+</head>
+<body>
+<div>
+    <div class="container">
+        <h1><b>Cargar el archivo de datos</b></h1>
+        <h5><b>Recuerde que debe cargar un archivo Excel de extensión .csv!</b></h5>
+        <form th:action="@{/SubirDatosPruebas}" method="POST" enctype="multipart/form-data">
+            <br>
+            <input type="file" class="form-control" name="file" accept = ".csv">
+            <br>
+            <input class = "btn btn-primary"
+                   type="submit" value="Cargar el archivo a la Base de Datos">
+        </form>
+        <br>
+        <u><b> <h2 th:text="${mensaje}"></h2></b></u>
+    </div>
+    <a class="button" href="/"><button>Volver al menú principal</button></a>
+    <a class="button" href="/VerPruebas"><button>Ver pruebas</button></a>
+</div>
+<br>
+<hr>
+</body>
+</html>
