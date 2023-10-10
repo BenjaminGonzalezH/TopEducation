@@ -129,4 +129,41 @@ public class PruebaService {
     public void EliminarPruebas(ArrayList<PruebaEntity> Pruebas){
         pruebaRepository.deleteAll(Pruebas);
     }
+
+    public ArrayList<PruebaEntity> ObtenerPruebasPorRutEstudiante(String Rut) {
+        /*Busqueda de ID de estudiante*/
+        EstudiantesEntity estudiante = estudiantesRepository.findByRut(Rut);
+
+        /*Se verifica que el estudiante exista*/
+        if(estudiante == null){
+            /*Se crea estructura con 1 elemento*/
+            ArrayList<PruebaEntity> listafinal = new ArrayList<PruebaEntity>();
+            PruebaEntity Prueba = new PruebaEntity();
+            Prueba.setPuntaje(-1);
+            listafinal.add(Prueba);
+
+            return listafinal;
+        }
+        else {
+            /*Busqueda de conjunto de pruebas por por id estudiante*/
+            return pruebaRepository.findAllByEstudianteId(estudiante.getId_estudiante());
+        }
+    }
+
+    public Integer PromediosPruebasEstudiante(ArrayList<PruebaEntity> Pruebas){
+        /*Variables internas*/
+        int i = 0;              //Contador de recorrido.
+        Integer Suma = 0;       //Suma de puntajes.
+
+        if (Pruebas.size() > 0) {
+            while (i < Pruebas.size()) {
+                Suma = Suma + Pruebas.get(i).getPuntaje();
+                i++;
+            }
+            return (Suma / Pruebas.size());
+        }
+        else{
+            return 0;
+        }
+    }
 }

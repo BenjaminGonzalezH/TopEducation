@@ -5,6 +5,8 @@ import TopEducation.App.repositories.EstudiantesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class EstudiantesService {
     @Autowired
@@ -24,5 +26,9 @@ public class EstudiantesService {
             //En caso contrario se retorna 1.
             return 1;
         }
+    }
+
+    public ArrayList<EstudiantesEntity> BuscarTodosEstudiantes(){
+        return (ArrayList<EstudiantesEntity>) EstudiantesRepository.findAll();
     }
 }

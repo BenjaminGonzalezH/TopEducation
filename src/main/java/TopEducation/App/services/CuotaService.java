@@ -154,7 +154,7 @@ public class CuotaService {
             ModeloCuota = new CuotaEntity();
             ModeloCuota.setId_estudiante(estudiante.getId_estudiante());
             ModeloCuota.setMonto_primario((float) (1500000 / 2));
-            ModeloCuota.setTipo_pag("Cuotas");
+            ModeloCuota.setTipo_pag("Contado");
             ModeloCuota.setEstado("Pendiente");
             ModeloCuota.setMonto_pagado((float) 1500000/2);
             ModeloCuota.setFecha_crea(LocalDate.now());

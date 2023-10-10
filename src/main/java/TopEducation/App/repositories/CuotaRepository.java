@@ -10,7 +10,7 @@ import java.util.ArrayList;
 @Repository
 public interface CuotaRepository extends JpaRepository<CuotaEntity, Long> {
 
-    /*Buscar Cuota por Rut de estudiante*/
+    /*Buscar Cuotas por id de estudiante*/
     @Query("SELECT cuota FROM CuotaEntity cuota WHERE cuota.id_estudiante = :idEstudiante")
     ArrayList<CuotaEntity> findAllByEstudianteId(@Param("idEstudiante") Long idEstudiante);
 
