@@ -184,4 +184,49 @@ public class CuotaService {
         /* Se retorna la lista de cuotas generadas */
         return cuotasGeneradas;
     }
+
+    public Integer ContarCuotasPagadas(ArrayList<CuotaEntity> Cuotas){
+        /*Variable interna*/
+        Integer CanCuotasPagadas = 0;
+        int i = 0;
+
+        while (i < Cuotas.size()){
+            if(Cuotas.get(i).getEstado().equals("Pagado")){
+                CanCuotasPagadas++;
+            }
+            i++;
+        }
+
+        return CanCuotasPagadas;
+    }
+
+    public Integer ContarCuotasAtrasadas(ArrayList<CuotaEntity> Cuotas){
+        /*Variable interna*/
+        Integer CanCuotasAtrasadas = 0;
+        int i = 0;
+
+        while (i < Cuotas.size()){
+            if(Cuotas.get(i).getMeses_atra() != 0){
+                CanCuotasAtrasadas++;
+            }
+            i++;
+        }
+
+        return CanCuotasAtrasadas;
+    }
+
+    public String FechaUltimaCuotaPagada(ArrayList<CuotaEntity> Cuotas){
+        /*Variable interna*/
+        String Fecha = "";
+        int i = Cuotas.size()-1;
+
+        while (i < 0){
+            if(Cuotas.get(i).getEstado().equals("Pagado")){
+                Fecha = Cuotas.get(i).getFecha_pago().toString();
+            }
+            i--;
+        }
+
+        return Fecha;
+    }
 }

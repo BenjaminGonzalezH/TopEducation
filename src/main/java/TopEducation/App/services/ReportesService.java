@@ -127,9 +127,99 @@ public class ReportesService {
         return ResponseEntity.ok().headers(headers).contentLength(outputStream.size()).body(outputStream.toByteArray());
     }
 
-    public void ResumenEstadoDePagos(){
+    public ResponseEntity<byte[]> ResumenEstadoDePagos(){
         /*Variables internas*/
         ArrayList<EstudiantesEntity> Estudiantes;       //Lista con todos los estudiantes.
-        
+        ArrayList<CuotaEntity> AuxCuotasEstudiantes;    //Lista de cuotas de un estudiante.
+        ArrayList<PruebaEntity> AuxPruebasEstudiantes;  //Lista de cuotas de un estudiante.
+        String RutEstudiante;                           //Rut de un estudiante;
+        String NombreEstudiante = "";
+        String NroExamenesRendidos = "";
+        String NroTotalCuotas = "";
+        String Promedio = "";
+        String Monto = "";
+        String TipoPago = "";
+        String TotalPagadas = "";
+        String MontoPagado = "";
+        String CuotasAtrasadas = "";
+        String FechaUltimoPago = "";
+        String MontoPorPagar = "";
+        Integer CuotasPagadas;
+        ArrayList<String[]> data = new ArrayList<>();   //Estructura que guarda todos los datos.
+        int i = 0;                                      //Contador para recorrer listas.
+
+        /*Columnas que se van a considerar*/
+        data.add(new String[]{"Rut", "Nombre de estudiante", "Nro Examenes rendidos", "Promedio puntaje exámenes",
+                "Monto total arancel a pagar", "Tipo Pago (Contado/Cuotas)",
+                "Nro. total de cuotas pactadas", "Nro. cuotas pagadas", "Monto total pagado",
+                "Fecha último pago", "Saldo por pagar", "Nro. Cuotas con retraso"});
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        /*Se buscan a todos los estudiantes*/
+        Estudiantes = estudiantesService.BuscarTodosEstudiantes();
+
+        while(i < Estudiantes.size()){
+            //Se saca Rut de estudiante en posición i.
+            RutEstudiante = Estudiantes.get(i).getRut();
+
+            /*Cuotas y pruebas del estudiante*/
+            AuxCuotasEstudiantes = cuotaService.ObtenerCuotasPorRutEstudiante(RutEstudiante);
+            AuxPruebasEstudiantes = pruebaService.ObtenerPruebasPorRutEstudiante(RutEstudiante);
+
+            /*Nombre de estudiante*/
+            NombreEstudiante = Estudiantes.get(i).getApellidos() + " " +Estudiantes.get(i).getNombres();
+
+            /*Numero total de pruebas y cuotas*/
+            NroExamenesRendidos = String.valueOf(AuxPruebasEstudiantes.size());
+            NroTotalCuotas = String.valueOf(AuxCuotasEstudiantes.size());
+
+            /*Promedio notas estudiante*/
+            Promedio = String.valueOf(pruebaService.PromediosPruebasEstudiante(AuxPruebasEstudiantes));
+
+            /*Tipo Pago y monto total a pagar*/
+            if(AuxCuotasEstudiantes.size() > 1) {
+                //Se establece número tipo de pago.
+                TipoPago = AuxCuotasEstudiantes.get(1).getTipo_pag();
+                Monto = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())
+                        * (AuxCuotasEstudiantes.size()-1));
+                /*Conteo de cuotas Pagadas*/
+                CuotasPagadas = cuotaService.ContarCuotasPagadas(AuxCuotasEstudiantes);
+                TotalPagadas = String.valueOf(CuotasPagadas-1);
+                /*Monto total pagado*/
+                MontoPagado = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())*CuotasPagadas);
+                /*Monto por pagar*/
+                MontoPorPagar = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())
+                        *((AuxCuotasEstudiantes.size())-CuotasPagadas));
+                /*Numero de cuotas con retraso*/
+                CuotasAtrasadas = String.valueOf(cuotaService.ContarCuotasAtrasadas(AuxCuotasEstudiantes));
+                /*Fecha ultimo pago*/
+                FechaUltimoPago = cuotaService.FechaUltimaCuotaPagada(AuxCuotasEstudiantes);
+            }
+
+            data.add(new String[]{RutEstudiante, NombreEstudiante, NroExamenesRendidos, Promedio,
+                    Monto, TipoPago, NroTotalCuotas, TotalPagadas, MontoPagado,
+                    FechaUltimoPago, MontoPorPagar, CuotasAtrasadas});
+
+            //Incremento.
+            i++;
+        }
+
+        /*Después de obtención de datos se hace escritura de un CSV*/
+        // Escribe los datos en un archivo CSV
+        try (CSVWriter writer = new CSVWriter(new OutputStreamWriter(outputStream))) {
+            writer.writeAll(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Manejo de errores aquí
+        }
+
+        // Configura las cabeceras de respuesta para la descarga
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+        headers.setContentDispositionFormData("attachment", "Reporte.csv");
+
+        return ResponseEntity.ok().headers(headers).contentLength(outputStream.size()).body(outputStream.toByteArray());
+
     }
 }
