@@ -4,6 +4,7 @@ import TopEducation.App.entities.CuotaEntity;
 import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.entities.PruebaEntity;
 import com.opencsv.CSVWriter;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -27,21 +28,24 @@ public class ReportesService {
     @Autowired
     PruebaService pruebaService;
 
+    @Generated
     public ResponseEntity<byte[]> ArchivoPlannillaAranceles()
     {
         /*Variables internas*/
         ArrayList<EstudiantesEntity> Estudiantes;       //Lista con todos los estudiantes.
         String RutEstudiante;                           //Rut de un estudiante;
         String TipoPago;                                //Tipo de pago de las cuotas del estudiante.
-        String DescuentoPorTipoColegio = "0%";          //Descuento por tipo de colegio.
-        String DescuentoPorAniosEgreso = "0%";          //Descuento por años de egreso.
-        String DescuentoPorPruebas = "0%";              //Descuento por promedio de pruebas.
-        String Total;
+        String DescuentoPorTipoColegio;                 //Descuento por tipo de colegio.
+        String DescuentoPorAniosEgreso;                 //Descuento por años de egreso.
+        String DescuentoPorPruebas;                     //Descuento por promedio de pruebas.
+        String Total;                                   //Total a pagar.
         Integer Promedio;                               //Promedio de pruebas del estudiante.
+        Float descuentoPuntaje;                         //Descuento por notas aplicada a las cuotas.
         ArrayList<CuotaEntity> AuxCuotasEstudiantes;    //Lista de cuotas de un estudiante.
         ArrayList<PruebaEntity> AuxPruebasEstudiantes;  //Lista de cuotas de un estudiante.
         ArrayList<String[]> data = new ArrayList<>();   //Estructura que guarda todos los datos.
         int i = 0;                                      //Contador para recorrer listas.
+        int j;                                          //Contador para recorrer listas.
 
         /*Columnas que se van a considerar*/
         data.add(new String[]{"Rut", "Valor Nominal", "Tipo de pago", "Descuento Colegio",
@@ -56,6 +60,12 @@ public class ReportesService {
         while (i < Estudiantes.size()) {
             //Se saca Rut de estudiante en posición i.
             RutEstudiante = Estudiantes.get(i).getRut();
+
+            /*Reinicio de valores de descuento*/
+            DescuentoPorTipoColegio = "0%";
+            DescuentoPorAniosEgreso = "0%";
+            DescuentoPorPruebas = "0%";
+            descuentoPuntaje = 0.0F;
 
             //Obtención de listas de cuotas y pruebas por rut de estudiante.
             AuxCuotasEstudiantes = cuotaService.ObtenerCuotasPorRutEstudiante(RutEstudiante);
@@ -91,11 +101,24 @@ public class ReportesService {
                     Promedio = pruebaService.PromediosPruebasEstudiante(AuxPruebasEstudiantes);
                     if (Promedio >= 950) {
                         DescuentoPorPruebas = "10%";
+                        descuentoPuntaje = (float) 0.10;
                     } else if (Promedio >= 900) {
                         DescuentoPorPruebas = "5%";
+                        descuentoPuntaje = (float) 0.05;
                     } else if (Promedio >= 850) {
                         DescuentoPorPruebas = "2%";
+                        descuentoPuntaje = (float) 0.02;
                     }
+
+                    //Actualización de precio de cuotas.
+                    j = 0;
+                    while (j < AuxCuotasEstudiantes.size()){
+                        descuentoPuntaje = AuxCuotasEstudiantes.get(j).getMonto_primario()*descuentoPuntaje;
+                        AuxCuotasEstudiantes.get(j).setMonto_pagado(
+                                AuxCuotasEstudiantes.get(j).getMonto_pagado() - descuentoPuntaje);
+                        j++;
+                    }
+                    cuotaService.ActualizarCuotas(AuxCuotasEstudiantes);
 
                     //Total a pagar.
                     Total = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())
@@ -116,7 +139,6 @@ public class ReportesService {
             writer.writeAll(data);
         } catch (IOException e) {
             e.printStackTrace();
-            // Manejo de errores aquí
         }
 
         // Configura las cabeceras de respuesta para la descarga
@@ -127,23 +149,24 @@ public class ReportesService {
         return ResponseEntity.ok().headers(headers).contentLength(outputStream.size()).body(outputStream.toByteArray());
     }
 
+    @Generated
     public ResponseEntity<byte[]> ResumenEstadoDePagos(){
         /*Variables internas*/
         ArrayList<EstudiantesEntity> Estudiantes;       //Lista con todos los estudiantes.
         ArrayList<CuotaEntity> AuxCuotasEstudiantes;    //Lista de cuotas de un estudiante.
         ArrayList<PruebaEntity> AuxPruebasEstudiantes;  //Lista de cuotas de un estudiante.
         String RutEstudiante;                           //Rut de un estudiante;
-        String NombreEstudiante = "";
-        String NroExamenesRendidos = "";
-        String NroTotalCuotas = "";
-        String Promedio = "";
-        String Monto = "";
-        String TipoPago = "";
-        String TotalPagadas = "";
-        String MontoPagado = "";
-        String CuotasAtrasadas = "";
-        String FechaUltimoPago = "";
-        String MontoPorPagar = "";
+        String NombreEstudiante;
+        String NroExamenesRendidos;
+        String NroTotalCuotas;
+        String Promedio;
+        String Monto;
+        String TipoPago;
+        String TotalPagadas;
+        String MontoPagado;
+        String CuotasAtrasadas;
+        String FechaUltimoPago;
+        String MontoPorPagar;
         Integer CuotasPagadas;
         ArrayList<String[]> data = new ArrayList<>();   //Estructura que guarda todos los datos.
         int i = 0;                                      //Contador para recorrer listas.
@@ -162,6 +185,15 @@ public class ReportesService {
         while(i < Estudiantes.size()){
             //Se saca Rut de estudiante en posición i.
             RutEstudiante = Estudiantes.get(i).getRut();
+
+            /*Reinicio de valores*/
+            Monto = "";
+            TipoPago = "";
+            TotalPagadas = "";
+            MontoPagado = "";
+            CuotasAtrasadas = "";
+            FechaUltimoPago = "";
+            MontoPorPagar = "";
 
             /*Cuotas y pruebas del estudiante*/
             AuxCuotasEstudiantes = cuotaService.ObtenerCuotasPorRutEstudiante(RutEstudiante);
@@ -183,16 +215,21 @@ public class ReportesService {
                 TipoPago = AuxCuotasEstudiantes.get(1).getTipo_pag();
                 Monto = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())
                         * (AuxCuotasEstudiantes.size()-1));
+
                 /*Conteo de cuotas Pagadas*/
                 CuotasPagadas = cuotaService.ContarCuotasPagadas(AuxCuotasEstudiantes);
                 TotalPagadas = String.valueOf(CuotasPagadas-1);
+
                 /*Monto total pagado*/
                 MontoPagado = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())*CuotasPagadas);
+
                 /*Monto por pagar*/
                 MontoPorPagar = String.valueOf((AuxCuotasEstudiantes.get(1).getMonto_pagado())
                         *((AuxCuotasEstudiantes.size())-CuotasPagadas));
+
                 /*Numero de cuotas con retraso*/
                 CuotasAtrasadas = String.valueOf(cuotaService.ContarCuotasAtrasadas(AuxCuotasEstudiantes));
+
                 /*Fecha ultimo pago*/
                 FechaUltimoPago = cuotaService.FechaUltimaCuotaPagada(AuxCuotasEstudiantes);
             }

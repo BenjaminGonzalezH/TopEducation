@@ -7,14 +7,14 @@ import TopEducation.App.repositories.EstudiantesRepository;
 import TopEducation.App.services.CuotaService;
 import TopEducation.App.services.EstudiantesService;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class CuotaTest {
@@ -76,7 +76,7 @@ public class CuotaTest {
         estudiantesRepository.delete(estudiante);
 
         /*Se verifica lista vacia*/
-        assertEquals(cuotas.isEmpty(),true);
+        assertTrue(cuotas.isEmpty());
     }
 
     @Test
@@ -334,5 +334,40 @@ public class CuotaTest {
         assertEquals(Test.getMonto_pagado(),(float) 70000,0);
         assertEquals(Test.getEstado(),"Pagado");
         assertEquals(cuotas.get(0).getEstado(),"Pagado");
+    }
+
+    @Test
+    void ConteoDeCuotasYFechaDeUltimaPagada() {
+        //Elementos Internos.
+        EstudiantesEntity estudiante = new EstudiantesEntity();   //Estudiante de prueba.
+        ArrayList<CuotaEntity> cuotas;  //Cuotas generadas.
+        Integer CuotasPagadas;
+        Integer CuotasAtradadas;
+        String FechaUltimaPagada;
+
+        /*Se genera estudiante de prueba Dummy (esto para evitar errores)*/
+        estudiante.setRut("prueba2");
+        estudiante.setApellidos("Ramirez Baeza");
+        estudiante.setNombres("Elvio Camba");
+        estudiante.setFecha_nac(new Date());
+        estudiante.setTipo_cole("Privado");
+        estudiante.setNom_cole("Weston Academy");
+        estudiante.setAnio_egre(4);
+
+        /*Generar cuotas y buscar por ID*/
+        estudiante = estudiantesService.guardarEstudiantes(estudiante);
+        cuotas = cuotaService.GenerarCuotasDeEstudiante("prueba2",1,"Contado");
+        cuotaRepository.deleteAll(cuotas);
+        estudiantesRepository.delete(estudiante);
+
+        /*Conteo de cuotas*/
+        CuotasPagadas = cuotaService.ContarCuotasPagadas(cuotas);
+        CuotasAtradadas = cuotaService.ContarCuotasAtrasadas(cuotas);
+        FechaUltimaPagada = cuotaService.FechaUltimaCuotaPagada(cuotas);
+
+        /*Se verifica resultados*/
+        assertEquals(CuotasPagadas,1,0);
+        assertEquals(CuotasAtradadas,0,0);
+        assertEquals(FechaUltimaPagada, "");
     }
 }

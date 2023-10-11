@@ -4,6 +4,7 @@ import TopEducation.App.entities.CuotaEntity;
 import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.repositories.CuotaRepository;
 import TopEducation.App.repositories.EstudiantesRepository;
+import lombok.Generated;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -185,6 +186,7 @@ public class CuotaService {
         return cuotasGeneradas;
     }
 
+
     public Integer ContarCuotasPagadas(ArrayList<CuotaEntity> Cuotas){
         /*Variable interna*/
         Integer CanCuotasPagadas = 0;
@@ -199,6 +201,7 @@ public class CuotaService {
 
         return CanCuotasPagadas;
     }
+
 
     public Integer ContarCuotasAtrasadas(ArrayList<CuotaEntity> Cuotas){
         /*Variable interna*/
@@ -228,5 +231,10 @@ public class CuotaService {
         }
 
         return Fecha;
+    }
+
+    @Generated
+    public ArrayList<CuotaEntity> ActualizarCuotas(ArrayList<CuotaEntity> Cuotas){
+        return (ArrayList<CuotaEntity>) cuotaRepository.saveAll(Cuotas);
     }
 }

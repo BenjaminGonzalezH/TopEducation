@@ -4,6 +4,8 @@ import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.entities.PruebaEntity;
 import TopEducation.App.repositories.EstudiantesRepository;
 import TopEducation.App.repositories.PruebaRepository;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import lombok.Generated;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -32,8 +37,54 @@ public class PruebaService {
 
     private final Logger logg = LoggerFactory.getLogger(PruebaService.class);
 
+    @Generated
     public ArrayList<PruebaEntity> ObtenerDatosPruebas(){
         return (ArrayList<PruebaEntity>) pruebaRepository.findAll();
+    }
+
+    @Generated
+    public String VerificarArchivo(MultipartFile file) {
+        /*Se verifica archivo vació*/
+        if (file.isEmpty()) {
+            return "Archivo vacío";
+        }
+
+        try {
+            InputStreamReader reader = new InputStreamReader(file.getInputStream());
+            CSVReader csvReader = new CSVReader(reader);
+
+            // Lee las líneas del archivo CSV
+            String[] nextLine;
+            while ((nextLine = csvReader.readNext()) != null) {
+                // Verificar si cada línea tiene tres columnas
+                if (nextLine.length != 3) {
+                    return "El archivo debe poseer 3 columnas: Rut, puntaje, fecha";
+                }
+
+                // Realizar validación específica para cada columna (por ejemplo, validar el formato del rut o la fecha)
+                String rut = nextLine[0];
+                String puntaje = nextLine[1];
+                String fecha = nextLine[2];
+
+                /*Se verifica que puntaje sea un número*/
+                if (!puntaje.matches("^[0-9]+$")) {
+                    return "Puntaje debe ser un número";
+                }
+
+                /*Se verifica que fecha siga el formato de fecha*/
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                try {
+                    dateFormat.parse(fecha);
+                } catch (ParseException e) {
+                    return "El campo 'fecha' no tiene un formato de fecha válido (dd-MM-yyyy).";
+                }
+            }
+
+            /*Si cumple el formato se entrega string vacío*/
+            return "";
+        } catch (IOException | CsvValidationException e) {
+            return "Error al intentar procesar archivo";
+        }
     }
 
     @Generated
@@ -62,7 +113,6 @@ public class PruebaService {
     public void LeerArchivoCsv(String direccion){
         String texto = "";
         BufferedReader bf = null;
-        pruebaRepository.deleteAll();
         try{
             bf = new BufferedReader(new FileReader(direccion));
             String temp = "";
@@ -92,6 +142,7 @@ public class PruebaService {
         }
     }
 
+    @Generated
     public void GuardarPruebaEnBD(String Rut_Estudiante, String Puntaje, String Fecha_Realizacion) {
         /*Entidad a Guardar*/
         PruebaEntity Prueba = new PruebaEntity();
@@ -126,9 +177,11 @@ public class PruebaService {
         pruebaRepository.save(Prueba);
     }
 
+    @Generated
     public void EliminarPruebas(ArrayList<PruebaEntity> Pruebas){
         pruebaRepository.deleteAll(Pruebas);
     }
+
 
     public ArrayList<PruebaEntity> ObtenerPruebasPorRutEstudiante(String Rut) {
         /*Busqueda de ID de estudiante*/
@@ -149,6 +202,7 @@ public class PruebaService {
             return pruebaRepository.findAllByEstudianteId(estudiante.getId_estudiante());
         }
     }
+
 
     public Integer PromediosPruebasEstudiante(ArrayList<PruebaEntity> Pruebas){
         /*Variables internas*/

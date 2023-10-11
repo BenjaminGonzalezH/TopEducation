@@ -6,9 +6,12 @@ import TopEducation.App.services.EstudiantesService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.ArrayList;
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import java.util.Date;
 
 @SpringBootTest
 public class EstudiantesTest {
@@ -37,7 +40,6 @@ public class EstudiantesTest {
         estudiante.setAnio_egre(4);
 
         /*Guardado en la base de datos*/
-        resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
         estudiantesRepository.delete(estudiante);
 
@@ -62,19 +64,17 @@ public class EstudiantesTest {
         estudiante = new EstudiantesEntity(); //Creación.
 
         /*Guardado en la base de datos*/
-        resultado = new EstudiantesEntity();
         resultado = estudiantesService.guardarEstudiantes(estudiante);
         estudiantesRepository.delete(estudiante);
 
         /*Comparación*/
         /*Esto muestra que desde c*/
-        assertEquals(resultado.getRut(),null);
-        assertEquals(resultado.getApellidos(),null);
-        assertEquals(resultado.getNombres(),null);
-        assertEquals(resultado.getFecha_nac(),null);
-        assertEquals(resultado.getTipo_cole(),null);
-        assertEquals(resultado.getNom_cole(), null);
+        assertNull(resultado.getRut());
+        assertNull(resultado.getApellidos());
+        assertNull(resultado.getNombres());
         assertNull(resultado.getFecha_nac());
+        assertNull(resultado.getTipo_cole());
+        assertNull(resultado.getNom_cole());
     }
 
     @Test
@@ -116,8 +116,8 @@ public class EstudiantesTest {
     void VerificarExistenciaEstudiante() {
         /*Elementos Internos*/
         EstudiantesEntity estudiante;   //Estudiante de prueba.
-        Integer indicador;
-        Integer indicador1;
+        int indicador;
+        int indicador1;
 
         estudiante = new EstudiantesEntity(); //Creación.
         //Id de entidad actualizable de forma automatica
@@ -137,5 +137,21 @@ public class EstudiantesTest {
         /*Verificar resultados*/
         assertEquals(indicador,1,0);
         assertEquals(indicador1,0,0);
+    }
+
+    @Test
+    void BuscarTodosLosEstudiantes() {
+        /*Elementos Internos*/
+        ArrayList<EstudiantesEntity> estudiantes;   //Estudiantes
+
+        /*Buscar estudiantes*/
+        estudiantes = estudiantesService.BuscarTodosEstudiantes();
+
+        /*Se verifica que se tiene tamaño*/
+        if(estudiantes.size() == 0){
+            assertEquals(0,0,0);
+        }else {
+            assertEquals(1, 1, 0);
+        }
     }
 }

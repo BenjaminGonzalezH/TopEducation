@@ -23,7 +23,6 @@ public class ReportesController {
         if (response.getStatusCode() == HttpStatus.OK) {
             return response;
         } else {
-            // Manejo de errores aquí, por ejemplo, redireccionar a una página de error
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
