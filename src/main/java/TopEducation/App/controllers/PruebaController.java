@@ -27,13 +27,13 @@ public class PruebaController {
     @PostMapping("/SubirDatosPruebas")
     public String upload(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
 
-        String mensaje = pruebaService.VerificarArchivo(file);
+        pruebaService.GuardarNombreArchivo(file);
+        String mensaje = pruebaService.VerificarArchivo("Pruebas.csv");
         if(!mensaje.equals("")) {
             redirectAttributes.addFlashAttribute("mensaje", mensaje);
             return "redirect:/SubirDatosPruebas";
         }
         else {
-            pruebaService.GuardarNombreArchivo(file);
             redirectAttributes.addFlashAttribute("mensaje", "¡Archivo cargado correctamente!");
             pruebaService.LeerArchivoCsv("Pruebas.csv");
             return "redirect:/SubirDatosPruebas";

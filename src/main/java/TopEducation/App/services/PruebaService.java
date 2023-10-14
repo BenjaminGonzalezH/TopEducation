@@ -4,7 +4,10 @@ import TopEducation.App.entities.EstudiantesEntity;
 import TopEducation.App.entities.PruebaEntity;
 import TopEducation.App.repositories.EstudiantesRepository;
 import TopEducation.App.repositories.PruebaRepository;
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvValidationException;
 import lombok.Generated;
 import org.slf4j.Logger;
@@ -13,10 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -43,18 +45,26 @@ public class PruebaService {
     }
 
     @Generated
-    public String VerificarArchivo(MultipartFile file) {
-        /*Se verifica archivo vació*/
-        if (file.isEmpty()) {
-            return "Archivo vacío";
-        }
-
+    public String VerificarArchivo(String nombreArchivo) {
+        /*Verificar existencia*/
         try {
-            InputStreamReader reader = new InputStreamReader(file.getInputStream());
-            CSVReader csvReader = new CSVReader(reader);
+            File archivo = new File(nombreArchivo);
+            if (!archivo.exists()) {
+                return "El archivo no existe";
+            }
+
+            // Abre el archivo para lectura
+            FileReader fileReader = new FileReader(archivo);
+            CSVParser parser = new CSVParserBuilder()
+                    .withSeparator(';') // Especifica el punto y coma como delimitador
+                    .build();
+            CSVReader csvReader = new CSVReaderBuilder(fileReader)
+                    .withCSVParser(parser)
+                    .build();
 
             // Lee las líneas del archivo CSV
             String[] nextLine;
+            csvReader.readNext(); //Omitir primera linea.
             while ((nextLine = csvReader.readNext()) != null) {
                 // Verificar si cada línea tiene tres columnas
                 if (nextLine.length != 3) {
@@ -62,12 +72,11 @@ public class PruebaService {
                 }
 
                 // Realizar validación específica para cada columna (por ejemplo, validar el formato del rut o la fecha)
-                String rut = nextLine[0];
                 String puntaje = nextLine[1];
                 String fecha = nextLine[2];
 
                 /*Se verifica que puntaje sea un número*/
-                if (!puntaje.matches("^[0-9]+$")) {
+                if (!puntaje.matches("^-?[0-9]+$")) {
                     return "Puntaje debe ser un número";
                 }
 
@@ -80,7 +89,10 @@ public class PruebaService {
                 }
             }
 
-            /*Si cumple el formato se entrega string vacío*/
+            // Cierra el archivo después de leerlo
+            fileReader.close();
+
+            /* Si cumple el formato se entrega una cadena vacía */
             return "";
         } catch (IOException | CsvValidationException e) {
             return "Error al intentar procesar archivo";
@@ -110,36 +122,36 @@ public class PruebaService {
     }
 
     @Generated
-    public void LeerArchivoCsv(String direccion){
-        String texto = "";
-        BufferedReader bf = null;
-        try{
-            bf = new BufferedReader(new FileReader(direccion));
-            String temp = "";
-            String bfRead;
-            int count = 1;
-            while((bfRead = bf.readLine()) != null){
-                if (count == 1){
-                    count = 0;
-                }
-                else{
-                    GuardarPruebaEnBD(bfRead.split(";")[0], bfRead.split(";")[1], bfRead.split(";")[2]);
-                    temp = temp + "\n" + bfRead;
-                }
+    public void LeerArchivoCsv(String nombreArchivo){
+        try {
+            File archivo = new File(nombreArchivo);
+
+            // Abre el archivo para lectura
+            FileReader fileReader = new FileReader(archivo);
+            CSVParser parser = new CSVParserBuilder()
+                    .withSeparator(';') // Especifica el punto y coma como delimitador
+                    .build();
+            CSVReader csvReader = new CSVReaderBuilder(fileReader)
+                    .withCSVParser(parser)
+                    .build();
+
+            String[] nextLine;
+            csvReader.readNext(); //Omitir primera linea.
+            while ((nextLine = csvReader.readNext()) != null) {
+                String rut = nextLine[0];
+                String puntaje = nextLine[1];
+                String fecha = nextLine[2];
+
+                GuardarPruebaEnBD(rut,puntaje,fecha);
             }
-            texto = temp;
-            System.out.println("Archivo leido exitosamente");
-        }catch(Exception e){
-            System.err.println("No se encontro el archivo");
-        }finally{
-            if(bf != null){
-                try{
-                    bf.close();
-                }catch(IOException e){
-                    logg.error("ERROR", e);
-                }
-            }
+
+            // Cierra el archivo después de leerlo
+            fileReader.close();
+
+        }catch (IOException | CsvValidationException e) {
+            return;
         }
+
     }
 
     @Generated
@@ -147,7 +159,7 @@ public class PruebaService {
         /*Entidad a Guardar*/
         PruebaEntity Prueba = new PruebaEntity();
         EstudiantesEntity Estudiante;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
         /*Se busca estudiante*/
         Estudiante = estudiantesRepository.findByRut(Rut_Estudiante);
