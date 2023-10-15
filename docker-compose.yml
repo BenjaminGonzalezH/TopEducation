@@ -1,16 +1,16 @@
 version: "3.8"
 services:
-  app:
-    container_name: topeducation
-    image: benjamingonzalezh/topeducation:latest
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: always
     ports:
-      - "8091:8090"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/TopEducation
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=postre
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
-      - db
+      - topeducation1
+      - topeducation2
 
   db:
     container_name: topeducationbd
@@ -23,3 +23,27 @@ services:
       - "5432:5432"
     volumes:
       - ./data/db:/var/lib/postgresql
+
+  topeducation1:
+    container_name: topeducation1
+    image: benjamingonzalezh/topeducation:latest
+    ports:
+      - "8091:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/TopEducation
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postre
+    depends_on:
+      - db
+
+  topeducation2:
+    container_name: topeducation2
+    image: benjamingonzalezh/topeducation:latest
+    ports:
+      - "8092:8090"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/TopEducation
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postre
+    depends_on:
+      - db
