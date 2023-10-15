@@ -2,7 +2,7 @@ version: "3.8"
 services:
   app:
     container_name: topeducation
-    image: topeducation
+    image: benjamingonzalezh/topeducation:latest
     ports:
       - "8091:8090"
     environment:
