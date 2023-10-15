@@ -84,35 +84,35 @@ public class CuotaController {
         /*Mensajes de error*/
         if(Error.get(0).getMeses_atra() == -1){
             model.addAttribute("mensaje","Pago al contado es unico");
-            return "welcome";
+            return "Welcome";
         }
         else if(Error.get(0).getMeses_atra() == -2){
             model.addAttribute("mensaje","Ya hay cuotas asociadas al rut");
-            return "welcome";
+            return "Welcome";
         }
         else if(Error.get(0).getMeses_atra() == -3){
             model.addAttribute("mensaje","Un alumno de un colegio municipal solo " +
                     "opta a máximo 10 cuotas");
-            return "welcome";
+            return "Welcome";
         }
         else if(Error.get(0).getMeses_atra() == -4){
             model.addAttribute("mensaje","Un alumno de un colegio subvencionado solo " +
                     "opta a máximo 7 cuotas");
-            return "welcome";
+            return "Welcome";
         }
         else if(Error.get(0).getMeses_atra() == -5){
             model.addAttribute("mensaje","Un alumno de un colegio privado solo " +
                     "opta a máximo 4 cuotas");
-            return "welcome";
+            return "Welcome";
         }
         else if(Error.get(0).getMeses_atra() == -6){
             model.addAttribute("mensaje","Rut dado no esta registrado");
-            return "welcome";
+            return "Welcome";
         }
 
         /*Cuotas generadas satisfactoriamente*/
         model.addAttribute("mensaje","Cuotas generadas satisfactoriamente.");
 
-        return "welcome";
+        return "Welcome";
     }
 }

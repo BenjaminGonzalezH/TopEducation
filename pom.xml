@@ -67,6 +67,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<finalName>TopEducation</finalName>
 	</build>
 
 </project>
